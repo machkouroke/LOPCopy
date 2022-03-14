@@ -23,15 +23,18 @@ class Runner(QRunnable):
     et le lancement du programme
     """
 
-    def __init__(self, directory, filetype, destination):
+    def __init__(self, directory, filetype, destination, move, recherche):
         super().__init__()
         self.signals = TreatmentSignal()
         self.directory = directory
         self.filetype = filetype
         self.destination = destination
+        self.move = move
+        self.recherche = recherche
 
     def run(self):
-        answer = traitement.file_refactor(self.directory, self.filetype, self.destination)
+        answer = traitement.file_refactor(self.directory, self.filetype, self.destination, self.move) \
+            if self.recherche != "Regroupement" else traitement.file_regroup(self.directory)
         file_moved = []
         for y in answer:
             self.signals.display.emit(y)
@@ -49,6 +52,8 @@ class Main:
         self.windows = uic.loadUi(filename, None)
         self.aide = helper.Helper()
         self.form, self.dep, self.destination = None, None, None
+        self.move = 'Copie'
+        self.recherche = "Surfacique"
         # Chef d'orchestre des thread
         self.thread = QThreadPool()
         self.windows.progression.hide()
@@ -56,13 +61,29 @@ class Main:
         self.windows.personnalise.clicked.connect(self.disable_suggestion)
         self.windows.help_.clicked.connect(self.aide.windows.open)
         self.windows.suggestion.clicked.connect(self.disable_input)
-        self.windows.buttonGroup.buttonClicked.connect(self.radio_manager)
+        self.windows.fileType.buttonClicked.connect(self.radio_manager)
+        self.windows.moveMode.buttonClicked.connect(self.move_mode)
+        self.windows.rechercheType.buttonClicked.connect(self.recherche_type)
         self.windows.select_dep.clicked.connect(self.select_dep_directory)
         self.windows.select_end.clicked.connect(self.select_destination_directory)
         self.windows.demarrer.clicked.connect(self.processing)
 
         # Ouverture de la fenêtre
         self.windows.show()
+
+    def recherche_type(self, i):
+        self.recherche = i.text()
+        if self.recherche == "Regroupement":
+            for j in {self.windows.extension, self.windows.dest_path, self.windows.select_end,
+                      self.windows.copie, self.windows.deplacement}:
+                j.setEnabled(False)
+            return
+        for j in {self.windows.extension, self.windows.dest_path, self.windows.select_end, self.windows.copie_move,
+                  self.windows.copie, self.windows.deplacement}:
+            j.setEnabled(True)
+
+    def move_mode(self, i):
+        self.move = i.text()
 
     def radio_manager(self, i):
         self.form = i.text().lower()
@@ -102,31 +123,35 @@ class Main:
         """
         # Path de depart et de destination
         self.dep = self.windows.dep_path.text()
-        self.destination = self.windows.dest_path.text()
+        self.destination = self.windows.dest_path.text() if self.recherche != 'Regroupement' else self.dep
 
         # Vérifie que tous les champs ont bien été saisi
-        if self.windows.personnalise.isChecked():
-            if not self.windows.format.text():
-                Warning.Dialog("Veuillez entrer un format")
+        if self.recherche != "Regroupement":
+            if self.windows.personnalise.isChecked():
+                if not self.windows.format.text():
+                    Warning.Dialog("Veuillez entrer un format")
+                    return
+                elif traitement.format_validator(self.windows.format.text()):
+                    # Format choisi
+                    self.form = self.windows.format.text().lower()
+                else:
+                    Warning.Dialog("Format non valide veuillez réessayer")
+                    return
+            elif not (self.windows.suggestion.isChecked() or self.windows.personnalise.isChecked()):
+                Warning.Dialog("Veuillez sélectionner un Format pour que je puisse vous aider !!")
                 return
-            elif traitement.format_validator(self.windows.format.text()):
-                # Format choisi
-                self.form = self.windows.format.text().lower()
-            else:
-                Warning.Dialog("Format non valide veuillez réessayer")
+            if self.form is None:
+                Warning.Dialog("Veuillez sélectionner un Format pour que je puisse vous aider!!")
                 return
-        elif not (self.windows.suggestion.isChecked() or self.windows.personnalise.isChecked()):
-            Warning.Dialog("Veuillez sélectionner un Format pour que je puisse vous aider !!")
-            return
-        if self.form is None:
-            Warning.Dialog("Veuillez sélectionner un Format pour que je puisse vous aider!!")
-            return
-        if not (self.dep and self.destination):
-            Warning.Dialog("L'un des chemin n'a pas été saisi correctement")
+            if not self.destination:
+                Warning.Dialog("Le chemin de destination n'a pas été saisi")
+                return
+        if not self.dep:
+            Warning.Dialog("Le chemin de départ n'a pas été saisi")
             return
 
         self.windows.progression.show()
-        process = Runner(self.dep, self.form, self.destination)
+        process = Runner(self.dep, self.form, self.destination, self.move, self.recherche)
         process.signals.display.connect(self.windows.log.setText)
         process.signals.finished.connect(self.finished)
         self.thread.start(process)

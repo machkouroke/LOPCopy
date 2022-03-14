@@ -12,12 +12,24 @@ def format_validator(string):
     return bool(re.match('^[a-zA-Z0-9]+$', string))
 
 
-def file_refactor(directory, filetype, destination):
+def file_regroup(directory):
+    for file in os.listdir(directory):
+        if os.path.isfile(os.path.join(directory, file)):
+            dir_type = os.path.join(directory, os.path.splitext(file)[-1].replace('.', ''))
+            try:
+                os.mkdir(dir_type)
+            except FileExistsError:
+                pass
+            yield f'👌{shutil.move(os.path.join(directory, file) , dir_type)}' + '\n'
+
+
+def file_refactor(directory, filetype, destination, move_mode):
     """
     Vérifie si un fichier du dossier directory se termine avec l'extension
     donnée en filetype et le copie si c'est le cas vers le dossier destination.
     À la fin il renvoie une liste de tous les fichiers copiés pour notifier
     l'utilisateur
+    :param move_mode: Copie simple ou déplacement
     :param directory : Dossier de départ des fichiers
     :param filetype : Extension des fichiers
     :param destination : Dossier de destination
@@ -25,6 +37,7 @@ def file_refactor(directory, filetype, destination):
     """
     destination = os.path.abspath(destination)
     # Si le dossier n'existe pas on le crée
+    fun = shutil.copy if move_mode == 'Copie' else shutil.move
     if not os.path.exists(destination):
         os.mkdir(destination)
     for x, y, z in os.walk(directory):
@@ -35,4 +48,4 @@ def file_refactor(directory, filetype, destination):
                     # Chemin du fichier actuel
                     path_file = os.path.join(directory, x, k)
                     # Copie du fichier
-                    yield '👌' + shutil.copy(path_file, destination) + '\n'
+                    yield f'👌{fun(path_file, destination)}' + '\n'
