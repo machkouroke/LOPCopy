@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>606</height>
+    <height>658</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>489</width>
-    <height>606</height>
+    <height>658</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>489</width>
-    <height>606</height>
+    <height>658</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -31,7 +31,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="extension">
      <property name="maximumSize">
       <size>
        <width>16777213</width>
@@ -102,7 +102,7 @@
             <bool>false</bool>
            </property>
            <attribute name="buttonGroup">
-            <string notr="true">suggestion_button</string>
+            <string notr="true">fileType</string>
            </attribute>
           </widget>
          </item>
@@ -118,7 +118,7 @@
             <bool>false</bool>
            </property>
            <attribute name="buttonGroup">
-            <string notr="true">suggestion_button</string>
+            <string notr="true">fileType</string>
            </attribute>
           </widget>
          </item>
@@ -128,7 +128,7 @@
             <string>MP4</string>
            </property>
            <attribute name="buttonGroup">
-            <string notr="true">suggestion_button</string>
+            <string notr="true">fileType</string>
            </attribute>
           </widget>
          </item>
@@ -139,33 +139,80 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="recherche">
+    <widget class="QGroupBox" name="methode">
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>100</height>
+      </size>
+     </property>
      <property name="title">
       <string>Méthode de récherche</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <layout class="QHBoxLayout" name="horizontalLayout_14">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <layout class="QHBoxLayout" name="horizontalLayout_12">
         <item>
-         <widget class="QRadioButton" name="recursive">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QRadioButton" name="recursive">
+            <property name="text">
+             <string>Récursive</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">rechercheType</string>
+            </attribute>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="regroupement">
+            <property name="text">
+             <string>Regroupement</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">rechercheType</string>
+            </attribute>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="surfacique">
+            <property name="text">
+             <string>Surfacique</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">rechercheType</string>
+            </attribute>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="copie_move">
+        <item>
+         <widget class="QRadioButton" name="copie">
           <property name="text">
-           <string>Récursive</string>
+           <string>Copie</string>
           </property>
           <property name="checked">
            <bool>true</bool>
           </property>
           <attribute name="buttonGroup">
-           <string notr="true">search_button</string>
+           <string notr="true">moveMode</string>
           </attribute>
          </widget>
         </item>
         <item>
-         <widget class="QRadioButton" name="surfacique">
+         <widget class="QRadioButton" name="deplacement">
           <property name="text">
-           <string>Surfacique</string>
+           <string>Déplacement</string>
           </property>
           <attribute name="buttonGroup">
-           <string notr="true">search_button</string>
+           <string notr="true">moveMode</string>
           </attribute>
          </widget>
         </item>
@@ -205,9 +252,18 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="destGroup">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="title">
       <string>Dossier de destination</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
@@ -317,7 +373,12 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="suggestion_button"/>
-  <buttongroup name="search_button"/>
+  <buttongroup name="fileType"/>
+  <buttongroup name="rechercheType"/>
+  <buttongroup name="moveMode">
+   <property name="exclusive">
+    <bool>true</bool>
+   </property>
+  </buttongroup>
  </buttongroups>
 </ui>
