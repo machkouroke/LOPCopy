@@ -34,7 +34,7 @@ class Runner(QRunnable):
 
     def run(self):
         answer = traitement.file_refactor(self.directory, self.filetype, self.destination, self.move) \
-            if self.recherche != "Regroupement" else traitement.file_regroup(self.directory)
+            if self.recherche != "Intelligent" else traitement.file_regroup(self.directory)
         file_moved = []
         for y in answer:
             self.signals.display.emit(y)
@@ -73,7 +73,7 @@ class Main:
 
     def recherche_type(self, i):
         self.recherche = i.text()
-        if self.recherche == "Regroupement":
+        if self.recherche == "Intelligent":
             for j in {self.windows.extension, self.windows.dest_path, self.windows.select_end,
                       self.windows.copie, self.windows.deplacement}:
                 j.setEnabled(False)
@@ -123,10 +123,10 @@ class Main:
         """
         # Path de depart et de destination
         self.dep = self.windows.dep_path.text()
-        self.destination = self.windows.dest_path.text() if self.recherche != 'Regroupement' else self.dep
+        self.destination = self.windows.dest_path.text() if self.recherche != 'Intelligent' else self.dep
 
         # Vérifie que tous les champs ont bien été saisi
-        if self.recherche != "Regroupement":
+        if self.recherche != "Intelligent":
             if self.windows.personnalise.isChecked():
                 if not self.windows.format.text():
                     Warning.Dialog("Veuillez entrer un format")
