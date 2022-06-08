@@ -1,3 +1,4 @@
+import contextlib
 import os
 import re
 import shutil
@@ -16,10 +17,8 @@ def file_regroup(directory):
     for file in os.listdir(directory):
         if os.path.isfile(os.path.join(directory, file)):
             dir_type = os.path.join(directory, os.path.splitext(file)[-1].replace('.', ''))
-            try:
+            with contextlib.suppress(FileExistsError):
                 os.mkdir(dir_type)
-            except FileExistsError:
-                pass
             yield f'👌{shutil.move(os.path.join(directory, file) , dir_type)}' + '\n'
 
 

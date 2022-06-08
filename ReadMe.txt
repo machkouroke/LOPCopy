@@ -1,1 +1,0 @@
-Veuillez exécuter le fichier main.exe pour lancer le programme
