@@ -16,9 +16,9 @@ Application de bureau pour gérer l'organisation de ces fichiers
 
 ## Utilisation
 
--**Mode intéligent**: Déplace tous les fichiers d'un dossiers dans un dossier du même nom que leur extension (De manière surfacique
--**Mode surfacique**: Déplace uniquement les fichiers à l'intérieur du dossier actuelle
--**Mode récursif**: Dépace touts les fichiers de manière récusif (A utiliser avec précaution)
+- **Mode intéligent**: Déplace tous les fichiers d'un dossiers dans un dossier du même nom que leur extension (De manière surfacique)
+- **Mode surfacique**: Déplace uniquement les fichiers à l'intérieur du dossier actuelle
+- **Mode récursif**: Dépace touts les fichiers de manière récusif (A utiliser avec précaution)
 
 
 
